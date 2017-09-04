@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerock.mapper.BoardMapper">
+
+	<insert id="create">
+		INSERT INTO tbl_board(title, content, writer)
+		VALUES(#{title}, #{content}, #{writer})
+	</insert>
+
+	<select id="read" resultType="BoardVO">
+		SELECT bno, title, content, writer,
+		regdate, viewcnt
+		FROM tbl_board
+		WHERE bno = #{bno}
+	</select>
+
+	<update id="update">
+		UPDATE tbl_board SET title = #{title}, content =
+		#{content}
+		WHERE bno = #{bno}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM tbl_board where bno = #{bno}
+	</delete>
+
+	<!-- CDATA : < > & 등 특수문자가 포함 될 경우 에러를 방지하기 위해 사용 -->
+	<select id="listAll" resultType="BoardVO">
+		<![CDATA[
+			SELECT bno, title, content, writer, regdate, viewcnt
+			FROM tbl_board
+			WHERE bno > 0
+			ORDER BY bno DESC, regdate DESC
+		]]>
+	</select>
+
+	<select id="listPage" resultType="BoardVO">
+		<![CDATA[
+		SELECT bno, title, content, writer, regdate, viewcnt
+		FROM tbl_board
+		WHERE bno > 0
+		ORDER BY bno DESC, regdate DESC
+		LIMIT #{page}, 10
+		]]>
+	</select>
+
+	<select id="listCriteria" resultType="BoardVO">
+		<![CDATA[
+		SELECT bno, title, content, writer, regdate, viewcnt
+		FROM tbl_board
+		WHERE bno > 0
+		ORDER BY bno DESC, regdate DESC
+		LIMIT #{pageStart}, #{perPageNum}
+		]]>
+	</select>
+
+	<select id="countPaging" resultType="int">
+		<![CDATA[
+		SELECT COUNT(bno) FROM tbl_board WHERE bno > 0
+		]]>
+	</select>
+
+	<!-- Dynamic SQL -->
+	<select id="listSearch" resultType="BoardVO">
+		<![CDATA[
+		SELECT *
+		FROM tbl_board
+		WHERE bno > 0
+		]]>
+		
+		<include refid="search"></include>
+		
+		<![CDATA[
+		ORDER BY bno DESC
+		LIMIT #{pageStart}, #{perPageNum}
+		]]>
+	</select>
+
+	<select id="listSearchCount" resultType="int">
+		<![CDATA[
+		SELECT COUNT(bno)
+		FROM tbl_board
+		WHERE bno > 0
+		]]>
+		
+		<include refid="search"></include>
+	</select>
+
+	<sql id="search">
+		<if test="searchType != null">
+			<if test="searchType == 't'.toString()">
+				AND title LIKE CONCAT('%',#{keyword}, '%')
+			</if>
+			<if test="searchType == 'c'.toString()">
+				AND content LIKE CONCAT('%',#{keyword}, '%')
+			</if>
+			<if test="searchType == 'w'.toString()">
+				AND writer LIKE CONCAT('%',#{keyword}, '%')
+			</if>
+			<if test="searchType == 'tc'.toString()">
+				AND (title LIKE CONCAT('%',#{keyword}, '%')
+				OR content LIKE CONCAT('%',#{keyword}, '%'))
+			</if>
+			<if test="searchType == 'cw'.toString()">
+				AND (content LIKE CONCAT('%',#{keyword}, '%')
+				OR writer LIKE CONCAT('%',#{keyword}, '%'))
+			</if>
+			<if test="searchType == 'tcw'.toString()">
+				AND (title LIKE CONCAT('%',#{keyword}, '%')
+				OR content LIKE CONCAT('%',#{keyword},'%')
+				OR writer LIKE CONCAT('%', #{keyword}, '%'))
+			</if>
+		</if>
+	</sql>
+</mapper>
