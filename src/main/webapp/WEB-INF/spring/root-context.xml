@@ -36,10 +36,22 @@
 		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
 	</bean>
 	
+	<!-- Transaction -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<!-- @Transactional 을 이용한 트랜잭션의 관리 가능 -->
+	<tx:annotation-driven/>
+	
 	<!-- org.zerock.* 패키지 자동으로 인식하기 위한 설정 -->
 	<context:component-scan base-package="org.zerock.persistence"></context:component-scan>
 	<context:component-scan base-package="org.zerock.service"></context:component-scan>
+	<context:component-scan base-package="org.zerock.aop"></context:component-scan>
 	
 	<!-- AOP auto proxy -->
 	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+	
+	<!-- XML 방식으로 AOP 기능을 설정할 때 사용 -->
+	<aop:config></aop:config>
 </beans>
