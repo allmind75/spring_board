@@ -11,7 +11,7 @@
 
 	<select id="read" resultType="BoardVO">
 		SELECT bno, title, content, writer,
-		regdate, viewcnt
+		regdate, viewcnt, replycnt
 		FROM tbl_board
 		WHERE bno = #{bno}
 	</select>
@@ -21,7 +21,15 @@
 		#{content}
 		WHERE bno = #{bno}
 	</update>
-
+	
+	<update id="updateReplyCnt">
+		UPDATE tbl_board SET replycnt = replycnt + #{amount} WHERE bno = #{bno}
+	</update>
+	
+	<update id="updateViewCnt">
+		UPDATE tbl_board SET viewcnt = viewcnt + 1 WHERE bno = #{bno}
+	</update>
+	
 	<delete id="delete">
 		DELETE FROM tbl_board where bno = #{bno}
 	</delete>
@@ -48,7 +56,7 @@
 
 	<select id="listCriteria" resultType="BoardVO">
 		<![CDATA[
-		SELECT bno, title, content, writer, regdate, viewcnt
+		SELECT bno, title, content, writer, regdate, viewcnt, replycnt
 		FROM tbl_board
 		WHERE bno > 0
 		ORDER BY bno DESC, regdate DESC

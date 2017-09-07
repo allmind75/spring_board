@@ -81,7 +81,7 @@
 			<ul class="timeline">
 				<!-- timeline time label -->
 				<li class="time-label" id="repliesDiv">
-					<span class="bg-green">Replies List</span>
+					<span class="bg-green">Replies List<small id="replycntSmall">[${boardVO.replycnt}]</small></span>
 				</li>
 			</ul>
 			<div class="text-center">
@@ -184,6 +184,9 @@
 			printPaging(data.pageMaker, $(".pagination"));
 			
 			$("#modifyModal").modal('hide');
+			
+			//댓글 삭제시 댓글 카운트 갱신, 댓글 전체 수를 이용해서 갱신
+			$("#replycntSmall").html("[" + data.pageMaker.totalCount + "]");
 		});
 	}
 	

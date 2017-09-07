@@ -17,6 +17,7 @@ public class MessageServiceImpl implements MessageService {
 	@Inject
 	private PointDAO pointDAO;
 	
+	//@Transactional에 의해 messageDAO.create와 pointDAO.updatePoint() 가 둘다 성공해야 commit됨
 	@Transactional
 	@Override
 	public void addMessage(MessageVO vo) throws Exception {
