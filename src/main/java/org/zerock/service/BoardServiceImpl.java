@@ -20,9 +20,23 @@ public class BoardServiceImpl implements BoardService {
 	@Inject
 	private BoardDAO dao;
 	
+	@Transactional
 	@Override
 	public void regist(BoardVO board) throws Exception {
+		
+		//게시물 추가
 		dao.create(board);
+		
+		//파일이름 추가
+		
+		String[] files = board.getFiles();
+		
+		if(files == null) {return;}
+		
+		for(String fileName: files) {
+			dao.addAttach(fileName);
+		}
+		
 	}
 	
 	//트랜잭션 격리수준 : 트랜잭션이 완료하기 전에는 데이터에 대한 수정사항을 다른 트랜잭션들이 볼 수 없도록 명시

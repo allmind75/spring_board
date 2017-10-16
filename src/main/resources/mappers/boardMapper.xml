@@ -9,6 +9,10 @@
 		VALUES(#{title}, #{content}, #{writer})
 	</insert>
 
+	<insert id="addAttach">
+		INSERT INTO tbl_attach(fullName, bno) values (#{fullName}, LAST_INSERT_ID())
+	</insert>
+	
 	<select id="read" resultType="BoardVO">
 		SELECT bno, title, content, writer,
 		regdate, viewcnt, replycnt
