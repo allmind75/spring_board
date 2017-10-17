@@ -108,11 +108,12 @@
 	})
 	
 	$("#registerForm").submit(function(event){
-		evnet.preventDefault();
+		event.preventDefault();
 		
 		var that = $(this);
 		var str = "";
 		
+		//업로드된 파일들을 form 태그의 내부에  추가
 		$(".uploadedList .delbtn").each(function(index){
 			str += "<input type='hidden' name='files[" + index + "]' value='" + $(this).attr("href") + "'>";
 		});

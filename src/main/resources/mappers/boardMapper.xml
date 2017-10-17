@@ -100,6 +100,10 @@
 		<include refid="search"></include>
 	</select>
 
+	<select id="getAttach" resultType="string">
+		SELECT fullName FROM tbl_attach WHERE bno = #{bno} ORDER BY REGDATE
+	</select>
+	
 	<sql id="search">
 		<if test="searchType != null">
 			<if test="searchType == 't'.toString()">

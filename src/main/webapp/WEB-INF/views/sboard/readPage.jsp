@@ -4,6 +4,21 @@
 <%@include file="../include/header.jsp"%>
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.js"></script>
+<script type="text/javascript" src="../resources/js/upload.js"></script>
+	
+<style>
+	.popup {position: absolute;}
+	.back {background-color: gray; opacity: 0.5; width: 100%; height: 300%; overflow: hidden; z-index: 1101;}
+	.front {z-index: 1110; opacity: 1; border: 1px; margin: auto;}
+	.show {position: relative; max-width: 1200px; max-height: 800px; overflow: auto;}
+</style>
+
+<!-- popup img -->
+<div class="popup back" style="display:none;"></div>
+<div id="popup_front" class="popup front" style="display: none;">
+	<img id="popup_img">
+</div>
+
 <!-- Main content -->
 <section class="content">
 	<div class="row">
@@ -44,6 +59,9 @@
 				<!-- /.box-body -->
 
 				<div class="box-footer">
+					<div><hr></div>
+					<ul class="mailbox-attachments clearfix uploadedList"></ul>
+						
 					<button type="submit" class="btn btn-warning" id="modifyBtn">Modify</button>
 					<button type="submit" class="btn btn-danger" id="removeBtn">REMOVE</button>
 					<button type="submit" class="btn btn-primary" id="goListBtn">GO
@@ -113,6 +131,8 @@
 	</div>
 </section>
 
+
+
 <script>
 	$(document).ready(function() {
 		var formObj = $("form[role = 'form']");
@@ -136,9 +156,26 @@
 			formObj.submit();
 		});
 		
+		
+		//ajax 파일 불러오기, json 타입
+		var bno = ${boardVO.bno};
+		var template = Handlebars.compile($("#templateAttach").html());
+		
+		$.getJSON("/sboard/getAttach/" + bno, function(list){
+			//파일 수 만큼 돌면서 이미지 추가
+			$(list).each(function(){
+				//this -> 파일 저장 경로
+				var fileInfo = getFileInfo(this);
+				var html = template(fileInfo);
+				
+				$(".uploadedList").append(html);
+			});
+		});
+		
 	});
 </script>
 
+<!-- reply template-->
 <script id="template" type="text/x-handlebars-template">
 	{{#each.}}
 		<li class="replyLi" data-rno={{rno}}>
@@ -155,6 +192,16 @@
 			</div>
 		</li>
 	{{/each}}
+</script>
+
+<!-- files template -->
+<script id="templateAttach" type="text/x-handlebars-template">
+	<li data-src="{{fullName}}"">
+		<span class="mailbox-attachment-icon has-img"><img src="{{imgsrc}}" alt="Attachment"></span>
+		<div class="mailbox-attachment-info">
+			<a href="{{getLink}}" class="mailbox-attachment-name">{{fileName}}</a>
+		</div>
+	</li>
 </script>
 
 <script>
@@ -322,6 +369,28 @@
 				}
 			}
 		})
+	});
+	
+	//이미지 파일 이름(a tag) 선택시 popup
+	$(".uploadedList").on("click", ".mailbox-attachment-info a", function(event){
+		
+		var fileLink = $(this).attr("href");
+		
+		if(checkImageType(fileLink)) {
+			event.preventDefault();
+			
+			var imgTag = $("#popup_img");
+			imgTag.attr("src", fileLink);
+			
+			console.log(fileLink);
+			
+			$(".popup").show('slow');
+			imgTag.addClass("show");
+		}
+	});
+	
+	$("#popup_img").on("click", function(){
+		$(".popup").hide('slow');
 	});
 
 </script>
