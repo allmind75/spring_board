@@ -146,8 +146,39 @@
 		});
 		
 		$("#removeBtn").on("click", function() {
+			/*
 			formObj.attr("action", "/sboard/removePage");
 			formObj.submit();
+			*/
+			
+			var replyCnt = $("#replycntSmall").html();
+			
+			console.log(replyCnt);
+			if(replyCnt > 0) {
+				alert("댓글이 달린 게시물을 삭제할 수 없습니다.");
+				return;
+			} else {
+			
+				//첨부파일의 이름들로 배열 생성
+				var arr = [];
+				$(".uploadedList li").each(function(index){
+					arr.push($(this).attr("data-src"));
+				});
+				
+				if(arr.length > 0) {
+					$.post("/deleteAllFiles", {files:arr}, function() {
+						//파일삭제 후, db삭제
+						formObj.attr("action", "/sboard/removePage");
+						formObj.submit();				
+						
+					});
+				} else {
+					formObj.attr("action", "/sboard/removePage");
+					formObj.submit();
+				}
+			}
+			
+			
 		});
 		
 		$("#goListBtn").on("click", function() {

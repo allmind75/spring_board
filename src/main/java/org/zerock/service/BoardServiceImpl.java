@@ -47,14 +47,34 @@ public class BoardServiceImpl implements BoardService {
 		return dao.read(bno);
 	}
 	
+	@Transactional
 	@Override
 	public void modify(BoardVO board) throws Exception {
 		dao.update(board);
+		
+		//수정시 기존 파일 전부 삭제하고, 추가한 파일 등록
+		Integer bno = board.getBno();
+		
+		dao.deleteAttach(bno);
+		
+		String[] files = board.getFiles();
+		
+		if(files == null) {return;}
+		
+		for(String fileName: files) {
+			dao.replacetAttach(fileName, bno);
+		}
 	}
 	
+	@Transactional
 	@Override
 	public void remove(Integer bno) throws Exception {
-		dao.delete(bno);
+		
+		//파일 삭제, tbl_attach가 tbl_board를 참조하기 때문에 반드시 파일을 먼저 삭제
+		dao.deleteAttach(bno);
+		
+		//글 삭제
+		dao.delete(bno);	
 	}
 	
 	@Override

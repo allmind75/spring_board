@@ -8,10 +8,6 @@
 		INSERT INTO tbl_board(title, content, writer)
 		VALUES(#{title}, #{content}, #{writer})
 	</insert>
-
-	<insert id="addAttach">
-		INSERT INTO tbl_attach(fullName, bno) values (#{fullName}, LAST_INSERT_ID())
-	</insert>
 	
 	<select id="read" resultType="BoardVO">
 		SELECT bno, title, content, writer,
@@ -100,9 +96,21 @@
 		<include refid="search"></include>
 	</select>
 
+	<insert id="addAttach">
+		INSERT INTO tbl_attach(fullName, bno) values (#{fullName}, LAST_INSERT_ID())
+	</insert>
+	
 	<select id="getAttach" resultType="string">
 		SELECT fullName FROM tbl_attach WHERE bno = #{bno} ORDER BY REGDATE
 	</select>
+	
+	<delete id="deleteAttach">
+		DELETE FROM tbl_attach WHERE bno = #{bno}
+	</delete>
+	
+	<insert id="replaceAttach">
+		INSERT INTO tbl_Attach(fullName, bno) values (#{fullName}, #{bno})
+	</insert>
 	
 	<sql id="search">
 		<if test="searchType != null">

@@ -44,6 +44,7 @@
 					<!-- /.box-body -->
 
 					<div class="box-footer">
+						<!-- 파일 추가 부분 -->
 						<div><hr></div>
 						<ul class="mailbox-attachments clearfix uploadedList"></ul>
 						<button type="submit" class="btn btn-primary">Submit</button>
